@@ -14,13 +14,13 @@ Evaluated on 300 randomly generated non-CNF expressions (depth 2–6, 4 variable
 
 | Method | Solve Rate | How it picks actions |
 |--------|-----------|----------------------|
-| **Sym-JEPA** | **33.0 ± 0.2%** | Learned value function scores predicted latent states |
+| **Sym-JEPA** | **33.0 ± 0.3%** | Learned value function scores predicted latent states |
 | Greedy heuristic | 31.3% | Computes actual cnf_distance of every candidate outcome |
 | Random | 18.0% | Uniform random selection |
 
-31.4M parameters. Trained for 20 epochs.
+31.4M parameters. Trained for 20 epochs. Per-seed solve rates: 33.3% / 33.0% / 32.7% (seeds 42 / 137 / 256).
 
-The greedy heuristic has access to ground-truth outcomes that our model never sees — it computes the real cnf_distance after every candidate action. Our model scores actions using only predicted latent states. Despite this information disadvantage, the learned value function achieves higher solve rate because it develops implicit lookahead: it avoids actions that look good immediately but create dead ends downstream (e.g., distribution rules that reduce cnf_distance by 1 but double expression size, exhausting the step budget).
+The greedy heuristic has access to ground-truth outcomes that our model never sees — it computes the real cnf_distance after every candidate action. Our model scores actions using only predicted latent states and **matches** the heuristic despite this information disadvantage (the ~1.7-point margin is ~5 of 300 problems — within noise, so we do not claim superiority). One hypothesis for the parity is implicit lookahead — avoiding actions that look good immediately but create dead ends downstream (e.g., distribution rules that reduce cnf_distance by 1 but double expression size) — but this is not established causally.
 
 ### Representation Properties (128-dim encoder, 3 seeds)
 
@@ -30,6 +30,8 @@ The greedy heuristic has access to ground-truth outcomes that our model never se
 | Representation rank ratio | 0.71 ± 0.03 | 0.16 ± 0.08 |
 
 The model discovers logical equivalence as an emergent property: expressions with identical truth tables cluster 5.8× closer than logically distinct ones, without any supervision on truth tables. This structure vanishes without SIGReg, confirming that distributional regularization is necessary to prevent representation collapse.
+
+Note: the table above is from the 128-dim study model. The 31.4M production model (384-dim) trains with SIGReg λ=0.09 and reaches the solve rates reported, but its final rank ratio is 0.08 (~31 of 384 dimensions active) — the default λ does not scale to 384 dims. Solve-rate performance co-exists with this partial collapse; raising λ is an open item.
 
 ## Architecture
 
