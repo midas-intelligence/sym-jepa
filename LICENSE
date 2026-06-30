@@ -1,6 +1,10 @@
 MIT License
 
-Copyright (c) 2026 Lucas Maes
+Copyright (c) 2026 Midas Intelligence Inc.
+
+The files in lewm/ (jepa.py, module.py) are third-party code from LeWorldModel
+(Copyright (c) 2026 Lucas Maes et al.), used unmodified under the MIT License;
+see lewm/ATTRIBUTION.md. This notice covers the remainder of the repository.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
